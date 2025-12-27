@@ -32,7 +32,10 @@ frappe.ui.form.on("Customer", {
 function calculate_outstanding_amount(frm) {
 	frappe.call({
 		method: "afaqtools.overrides.api.get_customer_outstanding",
-		args: { customer: frm.doc.name, company: frm.doc.custom_branch },
+		args: {
+			customer: frm.doc.name,
+			company: frm.doc.custom_branch || frappe.defaults.get_default("company"),
+		},
 		callback: (r) => {
 			frm.doc.custom_outstanding_amount = r.message;
 			frm.set_value("custom_outstanding_amount", r.message);
