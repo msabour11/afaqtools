@@ -43,7 +43,13 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Sales Invoice": "public/js/sales_invoice.js",
+    "Customer": "public/js/customer.js",
+    "Sales Order": "public/js/sales_order.js",
+    "Delivery Note": "public/js/delivery_note.js",
+    "Payment Entry": "public/js/payment_entry.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -137,13 +143,12 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Sales Invoice": {
+        "before_save": "afaqtools.overrides.api.set_customer_series_on_create",
+        "before_submit": "afaqtools.overrides.api.validate_advance_payment",
+    }
+}
 
 # Scheduled Tasks
 # ---------------
@@ -246,4 +251,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-
