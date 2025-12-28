@@ -23,4 +23,16 @@ frappe.ui.form.on("Sales Invoice", {
 			}
 		});
 	},
+
+	company: function (frm) {
+		frm.set_query("custom_mode_of_payment", function () {
+			return {
+				filters: {
+					company: frm.doc.company,
+				},
+			};
+		});
+		frm.set_value("cost_center", null);
+		frm.set_value("set_warehouse", null);
+	},
 });

@@ -1,6 +1,6 @@
 frappe.ui.form.on("Customer", {
 	refresh: function (frm) {
-		calculate_outstanding_amount(frm);
+		// calculate_outstanding_amount(frm);
 
 		frm.set_query("custom_cost_center", function () {
 			return {
@@ -27,6 +27,13 @@ frappe.ui.form.on("Customer", {
 			};
 		});
 	},
+});
+
+frappe.ui.form.on("Customer Credit Limit", {
+	custom_additional_credit_percent: function (frm, cdt, cdn) {
+		calculate_additional_credit_limit(frm);
+	},
+	credit_limit: function (frm, cdt, cdn) {},
 });
 
 function calculate_outstanding_amount(frm) {
@@ -66,6 +73,25 @@ function calculate_outstanding_amount_from_credit_limit(frm, total_outstanding) 
 		);
 	});
 	frm.save();
+
+	frm.refresh_field("credit_limits");
+}
+
+function calculate_additional_credit_limit(frm) {
+	if (!frm.doc.credit_limits || !frm.doc.credit_limits.length) return;
+
+	frm.doc.credit_limits.forEach((row) => {
+		let credit_limit = flt(row.credit_limit) || 0;
+		let additional_credit_percent = flt(row.custom_additional_credit_percent) || 0;
+
+		if (!credit_limit || !additional_credit_percent) return;
+
+		let additional_credit_limit =
+			credit_limit + (credit_limit * additional_credit_percent) / 100;
+
+		frappe.model.set_value(row.doctype, row.name, "credit_limit", additional_credit_limit);
+	});
+	// frm.save();
 
 	frm.refresh_field("credit_limits");
 }

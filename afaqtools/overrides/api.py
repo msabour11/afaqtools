@@ -138,3 +138,26 @@ def get_customer_outstanding(
             ) * dn_item.base_grand_total
 
     return outstanding_based_on_gle + outstanding_based_on_so + outstanding_based_on_dn
+
+
+def Validate_advance_payment_percentage(doc, method):
+    """
+    Validate that the actual advance payment percentage is equal to or greater than
+    the required customer percentage.
+    """
+    customer_required_percent = flt(doc.get("custom_advance_payment_percent") or 0)
+
+    advance_amount = flt(doc.get("total_advance") or 0)
+    grand_total = flt(doc.get("grand_total") or 0)
+
+    actual_payment_percent = (advance_amount / grand_total) * 100 if grand_total else 0
+
+    if doc.get("custom_is_mandatory_payment"):
+
+        if actual_payment_percent < customer_required_percent:
+            frappe.throw(
+                _(
+                    "Advance Payment Percentage ({0}%) must be equal to or more than the required customer percentage ({1}%)."
+                ).format(round(actual_payment_percent, 2), customer_required_percent),
+                title=_("Insufficient Advance Payment"),
+            )

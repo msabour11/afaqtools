@@ -147,6 +147,7 @@ doc_events = {
     "Sales Invoice": {
         "before_save": "afaqtools.overrides.api.set_customer_series_on_create",
         "before_submit": "afaqtools.overrides.api.validate_advance_payment",
+        "validate": "afaqtools.overrides.api.Validate_advance_payment_percentage",
     },
     "Item": {
         "autoname": "afaqtools.overrides.item.autoname_item",
